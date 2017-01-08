@@ -1,7 +1,7 @@
 import argparse
+import datetime
 import json
 import operator
-import os
 import random
 import re
 
@@ -15,9 +15,15 @@ NUMBER_OF_COURSES = 20
 
 def get_output_location_from_terminal():
     parser = argparse.ArgumentParser()
-    parser.add_argument("xlsx_output_location", help="<directory>/<filename>", type=str)
+    parser.add_argument("xlsx_output_location",
+        help="<directory>/<filename>",
+        type=str,
+        nargs='?',
+        default='')
     location = parser.parse_args().xlsx_output_location
-    return (location if location.endswith('.xlsx') else '{}.xlsx'.format(location))
+    return (location if (location.endswith('.xlsx') \
+        or not location) \
+        else '{}.xlsx'.format(location))
 
 def is_file_location_valid(file_location):
     directory = os.path.dirname(file_location)
@@ -113,15 +119,19 @@ def output_xlsx_book_to_file(xlsx_book, file_location):
 
 def main():
     file_location = get_output_location_from_terminal()
-    if is_file_location_valid(file_location):
-        courses_list = get_courses_list("https://www.coursera.org/sitemap~www~courses.xml")
-        random_courses = get_random_courses(courses_list, NUMBER_OF_COURSES)
-        courses_data = [get_course_data(course_url) for course_url in random_courses]    
-        xlsx_book = create_xlsx_book(courses_data)
-        output_xlsx_book_to_file(xlsx_book, file_location)
+    if file_location:
+        if not is_file_location_valid(file_location):
+            print('Incorrect xlsx output location.')
+            return
     else:
-        print('Incorrect xlsx output location.')
-        return
+        file_location = \
+        'Random coursera courses ({}).xlsx'.format(
+            str(datetime.datetime.now()))
+    courses_list = get_courses_list("https://www.coursera.org/sitemap~www~courses.xml")
+    random_courses = get_random_courses(courses_list, NUMBER_OF_COURSES)
+    courses_data = [get_course_data(course_url) for course_url in random_courses]    
+    xlsx_book = create_xlsx_book(courses_data)
+    output_xlsx_book_to_file(xlsx_book, file_location)
 
 if __name__ == '__main__':
     main()
