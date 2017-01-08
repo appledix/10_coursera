@@ -37,9 +37,7 @@ def get_courses_list(coursera_feed_xml_url):
     return [node[0].text for node in document]
 
 def get_random_courses(courses_list, number_of_courses):
-    total_number_of_courses = len(courses_list)
-    random_numbers = random.sample(range(total_number_of_courses), number_of_courses)
-    return [courses_list[number] for number in random_numbers]
+    return random.sample(courses_list, number_of_courses)
 
 def get_raw_html(url):
     request = requests.get(url)
