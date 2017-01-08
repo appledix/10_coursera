@@ -16,7 +16,9 @@
 ## Использование
 Запуск через терминал, при помощи python 3:
 
-    python3.5 coursera.py <xlsx_output_location>
+    python3.5 coursera.py <xlsx_output_location>(необязательно)
+
+Если путь для файла с результатом работы не будет указан явно, в папке со скриптом будет создан файл с именем 'Random coursera courses (текущая дата)'.
 
 
 
